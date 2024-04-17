@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
@@ -58,6 +59,7 @@ public class ChatActivity extends AppCompatActivity {
         userReference = FirebaseDatabase.getInstance().getReference("users");
         receiverName = getIntent().getStringExtra("name");
         receiverId = getIntent().getStringExtra("id");
+
         sharedPreferences = getSharedPreferences("com.example.mychatapp", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("id", getIntent().getStringExtra("id"));
@@ -82,7 +84,7 @@ public class ChatActivity extends AppCompatActivity {
         dbReferenceReceiver = FirebaseDatabase.getInstance().getReference("chats").child(receiverRoom);
 
 
-        dbReferenceSender.addValueEventListener(new ValueEventListener() {
+        dbReferenceSender.orderByChild("timestamp").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<MessageModel> messages = new ArrayList<>();
@@ -91,12 +93,12 @@ public class ChatActivity extends AppCompatActivity {
                     messages.add(messageModel);
                 }
                 messageAdapter.clear();
-//                Collections.sort(messages, new Comparator<MessageModel>() {
-//                    @Override
-//                    public int compare(MessageModel o1, MessageModel o2) {
-//                        return o1.getLocalDateTime().compareTo(o2.getLocalDateTime());
-//                    }
-//                });
+                Collections.sort(messages, new Comparator<MessageModel>() {
+                    @Override
+                    public int compare(MessageModel o1, MessageModel o2) {
+                        return o1.getTimestamp().compareTo(o2.getTimestamp());
+                    }
+                });
                 for(MessageModel message: messages){
                     messageAdapter.add(message);
                 }
@@ -114,7 +116,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String message = messageText.getText().toString();
-                if(message.trim().length() > 0){
+                if(!message.trim().isEmpty()){
                     SendMessage(message);
                 }
                 else{
@@ -126,7 +128,8 @@ public class ChatActivity extends AppCompatActivity {
     }
     private void SendMessage(String message){
         String messageId = UUID.randomUUID().toString();
-        MessageModel messageModel = new MessageModel(messageId, FirebaseAuth.getInstance().getUid(), message);
+        long currentTime = System.currentTimeMillis();
+        MessageModel messageModel = new MessageModel(messageId, FirebaseAuth.getInstance().getUid(), message, String.valueOf(currentTime));
         messageAdapter.add(messageModel);
         dbReferenceSender.child(messageId).setValue(messageModel)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

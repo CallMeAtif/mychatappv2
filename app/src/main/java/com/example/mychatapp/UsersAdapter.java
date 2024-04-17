@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -144,18 +145,20 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
                 .setPositiveButton("Create", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        stringIds.append(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//                        stringIds.append(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         for(UserModel userModel1: selectedUsers){
-                            stringIds.append(userModel1.getUserID().concat(" "));
-                            stringGroupUserNames.append(userModel1.getUserName().concat(" "));
+                            stringIds.append(userModel1.getUserID());
+                            stringGroupUserNames.append(userModel1.getUserName());
                         }
                         String groupName = editTextGroupName.getText().toString();
                         Intent intent = new Intent(context, GroupChatActivity.class);
                         Log.d("checking group ids", stringIds.toString());
+                        Log.d("my own id", FirebaseAuth.getInstance().getCurrentUser().getUid());
                         intent.putExtra("groupIds", stringIds.toString());
                         intent.putExtra("groupUserNames", stringGroupUserNames.toString());
                         intent.putExtra("groupName", groupName);
                         intent.putExtra("groupCreator", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+                        intent.putExtra("groupSender", FirebaseAuth.getInstance().getCurrentUser().getUid());
                         context.startActivity(intent);
 
                     }

@@ -26,8 +26,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference, groupsReference;
     UsersAdapter usersAdapter;
+    GroupChatAdapter groupChatAdapter;
     EditText searchEditText ;
     ImageView plusIcon;
     ImageView groupIcon;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         searchEditText = findViewById(R.id.searchEditText);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
+//        groupsReference = FirebaseDatabase.getInstance().getReference("group_messages");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

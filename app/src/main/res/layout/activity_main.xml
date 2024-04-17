@@ -19,7 +19,7 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:src="@drawable/plus_sign"
+            android:src="@drawable/add_group"
             android:layout_gravity="start"
             android:alpha="0"
             app:tint="@color/white"

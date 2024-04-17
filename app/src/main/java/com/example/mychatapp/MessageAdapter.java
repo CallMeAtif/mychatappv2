@@ -63,35 +63,39 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
         SharedPreferences preferences = context.getSharedPreferences("com.example.mychatapp", Context.MODE_PRIVATE);
         String id = preferences.getString("id","");
 
-        Collections.sort(messageModelList, new Comparator<MessageModel>() {
-            @Override
-            public int compare(MessageModel o1, MessageModel o2) {
-                return Long.compare(o1.getMesssageNumber(), o2.getMesssageNumber());
-            }
-        });
-        if(messageModel.getSenderId().equals(FirebaseAuth.getInstance().getUid())){
-            FirebaseDatabase.getInstance().getReference("chats").
-                    child(messageModel.getSenderId()+id).child("messageNumber").orderByChild("messageNumber");
-
-//            Collections.sort(messageModelList, new Comparator<MessageModel>() {
-//                @Override
-//                public int compare(MessageModel o1, MessageModel o2) {
-//                    return Long.compare(o1.getMesssageNumber(), o2.getMesssageNumber());
-//                }
-//            });
+////        Collections.sort(messageModelList, new Comparator<MessageModel>() {
+////            @Override
+////            public int compare(MessageModel o1, MessageModel o2) {
+////                return Long.compare(o1.getMesssageNumber(), o2.getMesssageNumber());
+////            }
+////        });
+//        if(messageModel.getSenderId().equals(FirebaseAuth.getInstance().getUid())){
+//            FirebaseDatabase.getInstance().getReference("chats").
+//                    child(messageModel.getSenderId()+id).child("time").orderByChild("time");
+//
+////            Collections.sort(messageModelList, new Comparator<MessageModel>() {
+////                @Override
+////                public int compare(MessageModel o1, MessageModel o2) {
+////                    return Long.compare(o1.getMesssageNumber(), o2.getMesssageNumber());
+////                }
+////            });
+//            holder.textViewSendMessage.setText(messageModel.getMessage());
+//        }
+//        else {
+//            FirebaseDatabase.getInstance().getReference("chats").
+//                    child(messageModel.getSenderId()+id).child("time").orderByChild("time");
+////            Collections.sort(messageModelList, new Comparator<MessageModel>() {
+////                @Override
+////                public int compare(MessageModel o1, MessageModel o2) {
+////                    return Long.compare(o1.getMesssageNumber(), o2.getMesssageNumber());
+////                }
+////            });
+//            holder.textViewReceivedMessage.setText(messageModel.getMessage());
+//        }
+        if(messageModel.getSenderId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
             holder.textViewSendMessage.setText(messageModel.getMessage());
         }
-        else {
-            FirebaseDatabase.getInstance().getReference("chats").
-                    child(messageModel.getSenderId()+id).child("messageNumber").orderByChild("messageNumber");
-//            Collections.sort(messageModelList, new Comparator<MessageModel>() {
-//                @Override
-//                public int compare(MessageModel o1, MessageModel o2) {
-//                    return Long.compare(o1.getMesssageNumber(), o2.getMesssageNumber());
-//                }
-//            });
-            holder.textViewReceivedMessage.setText(messageModel.getMessage());
-        }
+        else holder.textViewReceivedMessage.setText(messageModel.getMessage());
 
     }
 

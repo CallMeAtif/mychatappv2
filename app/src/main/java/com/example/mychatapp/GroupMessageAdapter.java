@@ -51,7 +51,6 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
     @Override
     public void onBindViewHolder(@NonNull GroupMessageAdapter.MyViewHolder holder, int position) {
         GroupMessageModel groupMessageModel = groupMessageModelList.get(position);
-        Log.d("hello world how are you i am fine", String.valueOf(getItemViewType(position)));
         if(getItemViewType(position) == VIEW_TYPE_SENT){
             holder.message_sent.setText(groupMessageModel.getMessageText());
             String senderId = groupMessageModel.getSenderId();

@@ -6,12 +6,17 @@ import androidx.appcompat.app.AppCompatActivity;
         import androidx.recyclerview.widget.LinearLayoutManager;
         import androidx.recyclerview.widget.RecyclerView;
 
-        import android.os.Bundle;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Bundle;
         import android.view.View;
         import android.widget.Button;
         import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -21,15 +26,17 @@ import com.google.firebase.database.DataSnapshot;
         import com.google.firebase.database.ValueEventListener;
 
         import java.util.ArrayList;
-        import java.util.List;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 public class GroupChatActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EditText messageEditText;
     private ImageView sendButton;
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReference, dbReferenceSender, dbReferenceReceiver;
     private GroupMessageAdapter groupMessageAdapter;
-    private String groupName, groupIds, groupUserNames, groupCreator;
+    private String groupName, groupIds, groupUserNames, groupCreator, groupSender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +55,25 @@ public class GroupChatActivity extends AppCompatActivity {
         groupIds = getIntent().getStringExtra("groupIds");
         groupUserNames = getIntent().getStringExtra("groupUserNames");
         groupCreator = getIntent().getStringExtra("groupCreator");
+        groupSender = getIntent().getStringExtra("groupSender");
+
+//        SharedPreferences sharedPreferences = getSharedPreferences("MyChats", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putString("groupIds", groupIds);
+//        editor.putString("groupUserNames", groupUserNames);
+//        editor.putString("groupName", groupName);
+//        editor.putString("groupCreator", groupCreator);
+//        editor.putString("groupIdsWithCurrentUser", stringIds.toString()+FirebaseAuth.getInstance().getCurrentUser().getUid());
+//        editor.apply();
 
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("group_messages");
+//        databaseReference = FirebaseDatabase.getInstance().getReference("group_messages");
+//        dbReferenceSender = FirebaseDatabase.getInstance().getReference("group_messages").child(FirebaseAuth.getInstance().getUid()+groupIds);
+//        dbReferenceReceiver = FirebaseDatabase.getInstance().getReference("group_messages").child(groupIds+FirebaseAuth.getInstance().getUid());
+
+        dbReferenceSender = FirebaseDatabase.getInstance().getReference("group_messages").child(groupSender+groupIds);
+        dbReferenceReceiver = FirebaseDatabase.getInstance().getReference("group_messages").child(groupIds+groupSender);
+
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,18 +83,20 @@ public class GroupChatActivity extends AppCompatActivity {
         });
 
         // Add ValueEventListener for updating messages
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        dbReferenceSender.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                groupMessageAdapter.clear();
+                List<GroupMessageModel> messages = new ArrayList<>();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     GroupMessageModel messageModel = dataSnapshot.getValue(GroupMessageModel.class);
-                    if (messageModel != null) {
-                        groupMessageAdapter.add(messageModel);
-                    }
+                    messages.add(messageModel);
+                }
+
+                groupMessageAdapter.clear();
+                for(GroupMessageModel message: messages){
+                    groupMessageAdapter.add(message);
                 }
                 groupMessageAdapter.notifyDataSetChanged();
-                recyclerView.scrollToPosition(groupMessageAdapter.getItemCount() - 1); // Scroll to bottom
             }
 
             @Override
@@ -82,15 +107,38 @@ public class GroupChatActivity extends AppCompatActivity {
 
     private void sendMessage() {
         String messageText = messageEditText.getText().toString().trim();
-        if (!messageText.isEmpty()) {
-            String groupId = databaseReference.push().getKey();
-            if (groupId != null) {
-                String senderId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                long currentTime = System.currentTimeMillis();
-                GroupMessageModel messageModel = new GroupMessageModel(groupId, senderId, messageText, String.valueOf(currentTime), groupName,groupUserNames,groupIds, groupCreator);
-                databaseReference.child(groupId).setValue(messageModel);
-                messageEditText.setText(""); // Clear the input field after sending
-            }
+//        if (!messageText.isEmpty()) {
+//            String groupId = databaseReference.push().getKey();
+//            if (groupId != null) {
+//                String senderId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//                long currentTime = System.currentTimeMillis();
+//                GroupMessageModel messageModel = new GroupMessageModel(groupId, senderId, messageText, String.valueOf(currentTime), groupName,groupUserNames,groupIds, groupCreator);
+//                databaseReference.child(groupId).setValue(messageModel);
+//                messageEditText.setText(""); // Clear the input field after sending
+//            }
+//        }
+        if(!messageText.isEmpty()){
+            String groupId = UUID.randomUUID().toString();
+            long currentTime = System.currentTimeMillis();
+            GroupMessageModel messageModel = new GroupMessageModel(groupId, FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                    messageText, String.valueOf(currentTime), groupName,groupUserNames,groupIds, groupCreator);
+            groupMessageAdapter.add(messageModel);
+            dbReferenceSender.child(groupId).setValue(messageModel)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(GroupChatActivity.this,"Failed to send message", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            dbReferenceReceiver.child(groupId).setValue(messageModel);
+            recyclerView.scrollToPosition(groupMessageAdapter.getItemCount()-1);
+            messageEditText.setText("");
         }
     }
 }

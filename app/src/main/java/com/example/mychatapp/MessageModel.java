@@ -8,33 +8,23 @@ public class MessageModel {
     private String messageId;
     private String senderId;
     private String message;
-    private long messsageNumber = 0;
-    private static long counter = 0;
+    private String timestamp;
     public MessageModel() {
     }
 
-    public MessageModel(String messageId, String senderId, String message) {
+    public MessageModel(String messageId, String senderId, String message, String timestamp) {
         this.messageId = messageId;
         this.senderId = senderId;
         this.message = message;
-        this.messsageNumber = counter;
-        counter += 1;
+        this.timestamp = timestamp;
     }
 
-    public long getMesssageNumber() {
-        return messsageNumber;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setMesssageNumber(long messsageNumber) {
-        this.messsageNumber = messsageNumber;
-    }
-
-    public static long getCounter() {
-        return counter;
-    }
-
-    public static void setCounter(long counter) {
-        MessageModel.counter = counter;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getMessageId() {
