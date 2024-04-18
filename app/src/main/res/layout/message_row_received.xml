@@ -19,6 +19,13 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textSize="16sp" />
+        <TextView
+            android:id="@+id/textViewReceivedMessageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp"
+            android:layout_below="@+id/textViewReceivedMessage"/>
 
     </RelativeLayout>
 </LinearLayout>

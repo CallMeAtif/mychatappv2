@@ -17,10 +17,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHolder>{
     private static final int VIEW_TYPE_SENT = 1;
@@ -61,8 +64,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
 
         if(messageModel.getSenderId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
             holder.textViewSendMessage.setText(messageModel.getMessage());
+            holder.textViewSendMessageTime.setText(formatTime(messageModel.getTimestamp()));
         }
-        else holder.textViewReceivedMessage.setText(messageModel.getMessage());
+        else{
+            holder.textViewReceivedMessage.setText(messageModel.getMessage());
+            holder.textViewReceivedMessageTime.setText(formatTime(messageModel.getTimestamp()));
+        }
 
     }
 
@@ -85,11 +92,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
         return messageModelList;
     }
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-        private TextView textViewSendMessage, textViewReceivedMessage;
+        private TextView textViewSendMessage, textViewReceivedMessage, textViewSendMessageTime, textViewReceivedMessageTime;
         public MyViewHolder(View itemView){
             super(itemView);
             textViewSendMessage = itemView.findViewById(R.id.textViewSendMessage);
+            textViewSendMessageTime = itemView.findViewById(R.id.textViewSendMessageTime);
             textViewReceivedMessage = itemView.findViewById(R.id.textViewReceivedMessage);
+            textViewReceivedMessage = itemView.findViewById(R.id.textViewReceivedMessageTime);
         }
+    }
+    private String formatTime(String timestamp) {
+        long timeInMillis = Long.parseLong(timestamp);
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        return sdf.format(new Date(timeInMillis));
     }
 }
