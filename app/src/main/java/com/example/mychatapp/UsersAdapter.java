@@ -76,7 +76,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
         if (selectedUsers.contains(userModel)) {
             holder.itemView.setBackgroundResource(R.color.PrimaryAccent);
         } else {
-            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+            holder.itemView.setBackgroundResource(R.color.PrimaryVarient);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
