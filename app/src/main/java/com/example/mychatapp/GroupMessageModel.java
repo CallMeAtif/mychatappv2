@@ -1,12 +1,10 @@
 package com.example.mychatapp;
 
-import java.util.Map;
 
 public class GroupMessageModel {
-//    private String messageId;
     private String senderId;
     private String messageText;
-    private String time;
+    private String timestamp;
     private String groupName;
     private String groupIds;
     private String groupUserNames;
@@ -20,7 +18,7 @@ public class GroupMessageModel {
     public GroupMessageModel(String groupId, String senderId, String messageText, String time, String groupName, String groupUserNames, String groupIds, String groupCreator) {
         this.senderId = senderId;
         this.messageText = messageText;
-        this.time = time;
+        this.timestamp = time;
         this.groupName = groupName;
         this.groupUserNames = groupUserNames;
         this.groupIds = groupIds;
@@ -68,14 +66,6 @@ public class GroupMessageModel {
         this.groupName = groupName;
     }
 
-//    public String getMessageId() {
-//        return messageId;
-//    }
-//
-//    public void setMessageId(String messageId) {
-//        this.messageId = messageId;
-//    }
-
     public String getSenderId() {
         return senderId;
     }
@@ -92,47 +82,11 @@ public class GroupMessageModel {
         this.messageText = messageText;
     }
 
-    public String getTime() {
-        return time;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public void fromMap(Map<String, Object> map) {
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            switch (key) {
-                case "senderId":
-                    this.senderId = (String) value;
-                    break;
-                case "messageText":
-                    this.messageText = (String) value;
-                    break;
-                case "time":
-                    this.time = (String) value;
-                    break;
-                case "groupName":
-                    this.groupName = (String) value;
-                    break;
-                case "groupIds":
-                    this.groupIds = (String) value;
-                    break;
-                case "groupUserNames":
-                    this.groupUserNames = (String) value;
-                    break;
-                case "groupCreator":
-                    this.groupCreator = (String) value;
-                    break;
-                case "groupId":
-                    this.groupId = (String) value;
-                    break;
-                default:
-                    // Handle unknown fields here, if necessary
-                    break;
-            }
-        }
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 }

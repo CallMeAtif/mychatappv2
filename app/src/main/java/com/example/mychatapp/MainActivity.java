@@ -26,9 +26,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
-    DatabaseReference databaseReference, groupsReference;
+    DatabaseReference databaseReference;
     UsersAdapter usersAdapter;
-    GroupChatAdapter groupChatAdapter;
     EditText searchEditText ;
     ImageView plusIcon;
     ImageView groupIcon;
@@ -58,20 +57,17 @@ public class MainActivity extends AppCompatActivity {
         searchEditText = findViewById(R.id.searchEditText);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
-//        groupsReference = FirebaseDatabase.getInstance().getReference("group_messages");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 usersAdapter.clear();
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-//                    String uId = dataSnapshot.getKey();
                     UserModel userModel = dataSnapshot.getValue(UserModel.class);
                     //this condition is used to check if the userid going to be changed is same or not if not same then ->
                     if(userModel != null && userModel.getUserID()!=null && !userModel.getUserID().equals(FirebaseAuth.getInstance().getUid())){
                         usersAdapter.add(userModel);
                     }
                 }
-//                List<UserModel> userModelList = usersAdapter.getUserModelList();
                 usersAdapter.notifyDataSetChanged();
             }
 

@@ -3,19 +3,15 @@ package com.example.mychatapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,13 +22,13 @@ import java.util.Locale;
 public class GroupChatAdapter extends RecyclerView.Adapter<GroupChatAdapter.MyViewHolder> {
     private Context context;
     private List<GroupMessageModel> groupMessageModels;
-//    private List<String> groupIds;
+    private List<String> groupIds;
 
 
     public GroupChatAdapter(Context context) {
         this.context = context;
         this.groupMessageModels = new ArrayList<>();
-//        this.groupIds = new ArrayList<>();
+        this.groupIds = new ArrayList<>();
     }
 
     @NonNull
@@ -45,31 +41,20 @@ public class GroupChatAdapter extends RecyclerView.Adapter<GroupChatAdapter.MyVi
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         GroupMessageModel messageModel = groupMessageModels.get(position);
-//        groupIds.add(messageModel.getGroupId());
+        groupIds.add(messageModel.getGroupId());
         holder.groupname.setText(messageModel.getGroupName());
         holder.groupcreator.setText(messageModel.getGroupCreator());
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("group_messages");
-
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Log.d("groupids ",messageModel.getGroupIds());
-//                Log.d("uid",FirebaseAuth.getInstance().getCurrentUser().getUid());
-//                if(messageModel.getGroupIds().contains(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-
-                    Intent intent = new Intent(context, GroupChatActivity.class);
-//                    SharedPreferences preferences1 = context.getSharedPreferences("MyChats", Context.MODE_PRIVATE);
-                    intent.putExtra("groupIds", messageModel.getGroupIds());
-                    intent.putExtra("groupUserNames",messageModel.getGroupUserNames());
-                    intent.putExtra("groupName", messageModel.getGroupName());
-                    intent.putExtra("groupCreator", messageModel.getGroupCreator());
-                    intent.putExtra("groupSender", messageModel.getSenderId());
-                    context.startActivity(intent);
-//                }
-//                else{
-//                    Toast.makeText(context,"You don't have permission to access this group.",Toast.LENGTH_SHORT).show();
-//                }
+                Intent intent = new Intent(context, GroupChatActivity.class);
+                intent.putExtra("groupIds", messageModel.getGroupIds());
+                intent.putExtra("groupUserNames",messageModel.getGroupUserNames());
+                intent.putExtra("groupName", messageModel.getGroupName());
+                intent.putExtra("groupCreator", messageModel.getGroupCreator());
+                intent.putExtra("groupSender", messageModel.getSenderId());
+                context.startActivity(intent);
             }
         });
     }
@@ -77,10 +62,10 @@ public class GroupChatAdapter extends RecyclerView.Adapter<GroupChatAdapter.MyVi
 
 
     public void add(GroupMessageModel groupMessageModel){
-//        if(!groupIds.contains(groupMessageModel.getGroupId())){
+        if(!groupIds.contains(groupMessageModel.getGroupId())){
             groupMessageModels.add(groupMessageModel);
             notifyDataSetChanged();
-//        }
+        }
     }
     public void clear(){
         groupMessageModels.clear();
@@ -103,9 +88,6 @@ public class GroupChatAdapter extends RecyclerView.Adapter<GroupChatAdapter.MyVi
         return groupMessageModels.size();
     }
 
-    public boolean contains(GroupMessageModel groupMessageModel) {
-        return groupMessageModels.contains(groupMessageModel);
-    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 //        TextView message, sender, time;

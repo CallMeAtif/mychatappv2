@@ -1,7 +1,6 @@
 package com.example.mychatapp;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,13 +54,13 @@ public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapte
             holder.message_sent.setText(groupMessageModel.getMessageText());
             String senderId = groupMessageModel.getSenderId();
             getUsernameFromFirebase(senderId, holder.sender_sent); // Fetch username and set it in the TextView
-            holder.time_sent.setText(formatTime(groupMessageModel.getTime()));
+            holder.time_sent.setText(formatTime(groupMessageModel.getTimestamp()));
         }
         else{
             holder.message_received.setText(groupMessageModel.getMessageText());
             String senderId = groupMessageModel.getSenderId();
             getUsernameFromFirebase(senderId, holder.receiver_received); // Fetch username and set it in the TextView
-            holder.time_received.setText(formatTime(groupMessageModel.getTime()));
+            holder.time_received.setText(formatTime(groupMessageModel.getTimestamp()));
         }
 
     }

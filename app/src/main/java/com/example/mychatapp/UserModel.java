@@ -1,7 +1,5 @@
 package com.example.mychatapp;
 
-import com.google.firebase.auth.UserProfileChangeRequest;
-
 public class UserModel {
     String userID;
     String userName;

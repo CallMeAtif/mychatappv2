@@ -26,8 +26,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
     private static final int VIEW_TYPE_SENT = 1;
     private static final int VIEW_TYPE_RECEIVED = 2;
     private Context context;
-    private SharedPreferences sharedPreferences;
-
     private List<MessageModel> messageModelList = new ArrayList<>();
 
     public MessageAdapter(Context context){
@@ -60,38 +58,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
 
     public void onBindViewHolder(@NonNull MessageAdapter.MyViewHolder holder, int position) {
         MessageModel messageModel = messageModelList.get(position);
-        SharedPreferences preferences = context.getSharedPreferences("com.example.mychatapp", Context.MODE_PRIVATE);
-        String id = preferences.getString("id","");
 
-////        Collections.sort(messageModelList, new Comparator<MessageModel>() {
-////            @Override
-////            public int compare(MessageModel o1, MessageModel o2) {
-////                return Long.compare(o1.getMesssageNumber(), o2.getMesssageNumber());
-////            }
-////        });
-//        if(messageModel.getSenderId().equals(FirebaseAuth.getInstance().getUid())){
-//            FirebaseDatabase.getInstance().getReference("chats").
-//                    child(messageModel.getSenderId()+id).child("time").orderByChild("time");
-//
-////            Collections.sort(messageModelList, new Comparator<MessageModel>() {
-////                @Override
-////                public int compare(MessageModel o1, MessageModel o2) {
-////                    return Long.compare(o1.getMesssageNumber(), o2.getMesssageNumber());
-////                }
-////            });
-//            holder.textViewSendMessage.setText(messageModel.getMessage());
-//        }
-//        else {
-//            FirebaseDatabase.getInstance().getReference("chats").
-//                    child(messageModel.getSenderId()+id).child("time").orderByChild("time");
-////            Collections.sort(messageModelList, new Comparator<MessageModel>() {
-////                @Override
-////                public int compare(MessageModel o1, MessageModel o2) {
-////                    return Long.compare(o1.getMesssageNumber(), o2.getMesssageNumber());
-////                }
-////            });
-//            holder.textViewReceivedMessage.setText(messageModel.getMessage());
-//        }
         if(messageModel.getSenderId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
             holder.textViewSendMessage.setText(messageModel.getMessage());
         }

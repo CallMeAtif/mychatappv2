@@ -45,7 +45,6 @@ public class ChatActivity extends AppCompatActivity {
     EditText messageText;
     RecyclerView recyclerView;
     MessageAdapter messageAdapter;
-    MessageModel messageModels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +71,6 @@ public class ChatActivity extends AppCompatActivity {
             receiverRoom = receiverId + FirebaseAuth.getInstance().getUid();
         }
         sendbtn = findViewById(R.id.sendMessageIcon);
-//        messageAdapter = new MessageAdapter(this);
         messageAdapter = new MessageAdapter(this);
         recyclerView = findViewById(R.id.chatrecycler);
         messageText = findViewById(R.id.messageEdit);
@@ -167,12 +165,4 @@ public class ChatActivity extends AppCompatActivity {
         }
         return false;
     }
-//    public Long toMilli(String dateIn) throws ParseException {
-//        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-//        Date date = (Date) formatter.parse(dateIn);
-//        long output = date.getTime() / 1000L;
-//        String str = Long.toString(output);
-//        long timestamp = Long.parseLong(str) * 1000;
-//        return timestamp;
-//    }
 }
