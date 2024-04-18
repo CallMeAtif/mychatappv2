@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -169,6 +170,39 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+    private Filter userFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<UserModel> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(userModelListFull);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for (UserModel userModel : userModelListFull) {
+                    if (userModel.getUserName().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(userModel);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            userModelList.clear();
+            userModelList.addAll((List<UserModel>) results.values);
+            notifyDataSetChanged();
+        }
+    };
+    //return the search
+    public Filter getFilter() {
+        return userFilter;
     }
 
     public void setImageView(ImageView imageView1){
